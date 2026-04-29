@@ -1,0 +1,338 @@
+# ============================================
+# Python
+# ============================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+pythonenv*
+
+# ============================================
+# Virtual Environment
+# ============================================
+venv/
+.venv/
+.env/
+.venv
+.env
+venv
+env
+ENV
+
+# ============================================
+# IDE / Editor
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-*
+workspace.xml
+*.iml
+.project
+.pydevproject
+
+# ============================================
+# Jupyter Notebook
+# ============================================
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+*.ipynb
+!notebooks/*.ipynb
+notebooks/.ipynb_checkpoints/
+
+# ============================================
+# Data files (RAW DATA - NEVER COMMIT)
+# ============================================
+data/raw/*.parquet
+data/raw/*.csv
+data/raw/*.json
+data/raw/*.npy
+!data/raw/.gitkeep
+
+# Processed data (can be regenerated)
+data/processed/*.npy
+data/processed/*.parquet
+data/processed/*.csv
+!data/processed/.gitkeep
+
+# Watermark file (local state)
+data/watermark.json
+
+# ============================================
+# Models (large binary files)
+# ============================================
+models/*.keras
+models/*.h5
+models/*.hdf5
+models/*.pkl
+models/*.pb
+models/*.onnx
+models/production/*.keras
+models/production/*.pkl
+!models/.gitkeep
+!models/production/.gitkeep
+
+# Model checkpoints
+*.ckpt
+*.ckpt.index
+*.ckpt.data-*
+checkpoints/
+checkpoint
+
+# ============================================
+# MLflow
+# ============================================
+mlruns/
+mlflow.db
+mlflow_data/
+*.db
+*.db-journal
+
+# ============================================
+# Metrics & Logs
+# ============================================
+metrics/*.db
+metrics/*.csv
+metrics/*.log
+metrics/*.json
+logs/
+*.log
+*.sqlite
+*.sqlite3
+
+# ============================================
+# TensorFlow / Keras
+# ============================================
+*.pb
+*.meta
+*.index
+*.data-*
+training_checkpoints/
+saved_model/
+keras_export/
+
+# ============================================
+# Testing & Coverage
+# ============================================
+.pytest_cache/
+__pycache__/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.tox
+*.cover
+.hypothesis/
+
+# ============================================
+# Docker
+# ============================================
+*.pid
+*.tmp
+docker-compose.override.yml
+.dockerignore
+
+# ============================================
+# Grafana (local config)
+# ============================================
+grafana/data/
+grafana/log/
+grafana/plugins/
+!grafana/provisioning/
+.grafana/
+
+# ============================================
+# Environment variables
+# ============================================
+.env
+.env.local
+.env.*.local
+*.env
+
+# ============================================
+# Secrets
+# ============================================
+*.key
+*.pem
+*.crt
+secrets/
+.secrets/
+api_keys.txt
+openaq_token.txt
+
+# ============================================
+# OS generated files
+# ============================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.bak
+
+# ============================================
+# Backup files
+# ============================================
+*.backup
+*.old
+*.orig
+*.rej
+*.swp
+*.swo
+
+# ============================================
+# Distribution / packaging
+# ============================================
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ============================================
+# Unit test / coverage reports
+# ============================================
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# ============================================
+# MyPy
+# ============================================
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ============================================
+# Pyre type checker
+# ============================================
+.pyre/
+
+# ============================================
+# pyenv
+# ============================================
+.python-version
+
+# ============================================
+# pipenv
+# ============================================
+Pipfile.lock
+
+# ============================================
+# poetry
+# ============================================
+poetry.lock
+
+# ============================================
+# pdm
+# ============================================
+.pdm.toml
+
+# ============================================
+# JetBrains IDEs (PyCharm, etc.)
+# ============================================
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+.idea_modules/
+.idea_inspectionProfiles/
+
+# ============================================
+# Microsoft (Windows)
+# ============================================
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+
+# ============================================
+# Temporary files
+# ============================================
+*.tmp
+*.temp
+*.log
+*.cache
+*.lock
+*.pid
+
+# ============================================
+# Large files warning (optional, for Git LFS)
+# ============================================
+# Uncomment if you want to prevent accidental commits of large files
+# *.parquet
+# *.npy
+# *.keras
+# *.h5
+
+# ============================================
+# Local configuration
+# ============================================
+config/local.yaml
+config/local.yml
+*.local.yaml
+*.local.yml
+
+# ============================================
+# Experiment tracking local files
+# ============================================
+experiments/
+wandb/
+wandb_export/
+results/
+
+# ============================================
+# Archive / temp directories
+# ============================================
+archive/
+temp/
+tmp/
+temp_data/
+backup_models/
+
+# ============================================
+# DVC (Data Version Control) - if you add later
+# ============================================
+.dvc/
+.dvcignore
+*.dvc
+!data/raw.dvc
+!models.dvc
+
+# ============================================
+# Pre-commit hooks
+# ============================================
+.pre-commit-config.yaml.local

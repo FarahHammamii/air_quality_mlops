@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+
+  # ── MLflow tracking server ─────────────────────────────────────────────
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.13.0
+    container_name: mlflow
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlruns:/mlruns          # run data lives on host
+      - ./models:/models          # artifacts (optional second store)
+    command: >
+      mlflow server
+        --backend-store-uri /mlruns
+        --default-artifact-root /mlruns
+        --host 0.0.0.0
+        --port 5000
+    restart: unless-stopped
+
+  # ── Grafana dashboard ──────────────────────────────────────────────────
+  grafana:
+    image: grafana/grafana:10.4.2
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin        # change in production
+      - GF_INSTALL_PLUGINS=frser-sqlite-datasource
+      - GF_AUTH_ANONYMOUS_ENABLED=true          # handy for local dev
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
+    volumes:
+      - ./metrics:/var/lib/grafana/metrics:ro              # DB/CSV read-only
+      - ./grafana/provisioning:/etc/grafana/provisioning   # auto-provisioning
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - mlflow
+    restart: unless-stopped
+
+volumes:
+  grafana_data:

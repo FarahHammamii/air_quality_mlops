@@ -1,0 +1,11 @@
+apiVersion: 1
+
+datasources:
+  - name: AirQualityMetrics
+    type: frser-sqlite-datasource
+    access: proxy
+    uid: air_quality_sqlite
+    jsonData:
+      path: /var/lib/grafana/metrics/runs.db
+    isDefault: true
+    editable: false

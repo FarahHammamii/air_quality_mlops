@@ -1,0 +1,8 @@
+# config/production_config.yaml
+model: heart
+seq_length: 72
+num_heads: 2
+num_layers: 1
+dropout: 0.3
+epochs: 100
+batch_size: 32

@@ -1,0 +1,190 @@
+{
+  "title": "Air Quality MLOps",
+  "uid": "air_quality_mlops",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "5m",
+  "time": { "from": "now-90d", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "title": "RMSE over time — HEART vs Baseline",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 0, "w": 16, "h": 9 },
+      "datasource": { "uid": "air_quality_sqlite" },
+      "targets": [
+        {
+          "rawQueryText": "SELECT run_ts AS time, heart_rmse AS 'HEART RMSE', baseline_rmse AS 'Baseline RMSE' FROM runs ORDER BY run_ts",
+          "timeColumns": ["time"],
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "none", "custom": { "lineWidth": 2 } },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "HEART RMSE" },
+            "properties": [{ "id": "color", "value": { "fixedColor": "#FF6B35", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Baseline RMSE" },
+            "properties": [{ "id": "color", "value": { "fixedColor": "#4ECDC4", "mode": "fixed" } }] }
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "MSE improvement % per batch",
+      "type": "bargauge",
+      "gridPos": { "x": 16, "y": 0, "w": 8, "h": 9 },
+      "datasource": { "uid": "air_quality_sqlite" },
+      "targets": [
+        {
+          "rawQueryText": "SELECT batch_id, mse_improvement_pct FROM runs ORDER BY run_ts DESC LIMIT 10",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red",    "value": null },
+              { "color": "yellow", "value": 5 },
+              { "color": "green",  "value": 7.5 }
+            ]
+          }
+        }
+      },
+      "options": { "orientation": "horizontal", "reduceOptions": { "calcs": ["lastNotNull"] } }
+    },
+    {
+      "id": 3,
+      "title": "Latest HEART RMSE",
+      "type": "stat",
+      "gridPos": { "x": 0, "y": 9, "w": 6, "h": 5 },
+      "datasource": { "uid": "air_quality_sqlite" },
+      "targets": [
+        {
+          "rawQueryText": "SELECT heart_rmse FROM runs ORDER BY run_ts DESC LIMIT 1",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "displayName": "HEART RMSE (µg/m³)",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green",  "value": null },
+              { "color": "yellow", "value": 20 },
+              { "color": "red",    "value": 35 }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 4,
+      "title": "Latest R²",
+      "type": "stat",
+      "gridPos": { "x": 6, "y": 9, "w": 6, "h": 5 },
+      "datasource": { "uid": "air_quality_sqlite" },
+      "targets": [
+        {
+          "rawQueryText": "SELECT heart_r2 FROM runs ORDER BY run_ts DESC LIMIT 1",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "displayName": "HEART R²",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red",    "value": null },
+              { "color": "yellow", "value": 0.7 },
+              { "color": "green",  "value": 0.85 }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 5,
+      "title": "Last batch run",
+      "type": "stat",
+      "gridPos": { "x": 12, "y": 9, "w": 6, "h": 5 },
+      "datasource": { "uid": "air_quality_sqlite" },
+      "targets": [
+        {
+          "rawQueryText": "SELECT run_ts AS time, batch_id FROM runs ORDER BY run_ts DESC LIMIT 1",
+          "timeColumns": ["time"],
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "dateTimeAsIso", "displayName": "Last run" }
+      }
+    },
+    {
+      "id": 6,
+      "title": "Total runs",
+      "type": "stat",
+      "gridPos": { "x": 18, "y": 9, "w": 6, "h": 5 },
+      "datasource": { "uid": "air_quality_sqlite" },
+      "targets": [
+        {
+          "rawQueryText": "SELECT COUNT(*) AS total_runs FROM runs",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "displayName": "Total pipeline runs" }
+      }
+    },
+    {
+      "id": 7,
+      "title": "MAE over time",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 14, "w": 12, "h": 8 },
+      "datasource": { "uid": "air_quality_sqlite" },
+      "targets": [
+        {
+          "rawQueryText": "SELECT run_ts AS time, heart_mae AS 'HEART MAE', baseline_mae AS 'Baseline MAE' FROM runs ORDER BY run_ts",
+          "timeColumns": ["time"],
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "none" } }
+    },
+    {
+      "id": 8,
+      "title": "Run history table",
+      "type": "table",
+      "gridPos": { "x": 12, "y": 14, "w": 12, "h": 8 },
+      "datasource": { "uid": "air_quality_sqlite" },
+      "targets": [
+        {
+          "rawQueryText": "SELECT batch_id, run_ts, heart_rmse, baseline_rmse, mse_improvement_pct, heart_r2 FROM runs ORDER BY run_ts DESC LIMIT 20",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "custom": { "align": "auto" } },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "mse_improvement_pct" },
+            "properties": [
+              { "id": "displayName", "value": "MSE imp %" },
+              { "id": "custom.displayMode", "value": "color-background" },
+              { "id": "thresholds", "value": {
+                "mode": "absolute",
+                "steps": [{"color":"red","value":null},{"color":"yellow","value":5},{"color":"green","value":7.5}]
+              }}
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
