@@ -66,6 +66,8 @@ jobs:
       - name: Run data ingestion
         id: ingest
         if: github.event.inputs.skip_ingestion != 'true'
+        env:
+          OPENAQ_API_KEY: ${{ secrets.OPENAQ_API_KEY }}
         run: |
           python batch_ingest.py --rolling-days 90
           
