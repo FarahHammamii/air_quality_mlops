@@ -1,0 +1,110 @@
+name: Manual Retrain - Hyperparameter Tuning
+
+on:
+  workflow_dispatch:
+    inputs:
+      num_heads:
+        description: 'Number of attention heads'
+        type: choice
+        options: ['1', '2', '3', '4']
+        default: '2'
+      num_layers:
+        description: 'Number of attention layers'
+        type: choice
+        options: ['1', '2']
+        default: '1'
+      dropout:
+        description: 'Dropout rate'
+        type: choice
+        options: ['0.2', '0.3', '0.4', '0.5']
+        default: '0.3'
+      seq_length:
+        description: 'Sequence length (hours)'
+        type: choice
+        options: ['48', '72', '96']
+        default: '72'
+      epochs:
+        description: 'Training epochs'
+        type: number
+        default: 100
+
+jobs:
+  manual-training:
+    name: 🔧 Manual Retrain - Custom Parameters
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      
+      - name: Cache pip packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+      
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      
+      - name: Create directories
+        run: |
+          mkdir -p data/raw data/processed
+          mkdir -p models models/production
+          mkdir -p mlruns metrics
+      
+      - name: Train with custom parameters
+        id: train
+        run: |
+          python train_pipeline.py \
+            --num-heads ${{ inputs.num_heads }} \
+            --num-layers ${{ inputs.num_layers }} \
+            --dropout ${{ inputs.dropout }} \
+            --seq-length ${{ inputs.seq_length }} \
+            --epochs ${{ inputs.epochs }}
+          
+          # Extract metrics for summary
+          python -c "
+          import json
+          with open('models/champion_metrics.json', 'r') as f:
+              champ = json.load(f)
+          print(f'heart_rmse={champ[\"heart_rmse\"]}')
+          " >> $GITHUB_OUTPUT
+      
+      - name: Display training results
+        run: |
+          echo "## Manual Training Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Parameters:**" >> $GITHUB_STEP_SUMMARY
+          echo "- Heads: ${{ inputs.num_heads }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Layers: ${{ inputs.num_layers }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Dropout: ${{ inputs.dropout }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Sequence Length: ${{ inputs.seq_length }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Epochs: ${{ inputs.epochs }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Results:**" >> $GITHUB_STEP_SUMMARY
+          echo "- HEART RMSE: ${{ steps.train.outputs.heart_rmse }} µg/m³" >> $GITHUB_STEP_SUMMARY
+      
+      - name: Upload trained model
+        uses: actions/upload-artifact@v4
+        with:
+          name: custom-model-heads-${{ inputs.num_heads }}-layers-${{ inputs.num_layers }}
+          path: models/
+          retention-days: 90
+      
+      - name: Upload MLflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mlflow-artifacts-manual
+          path: mlruns/
+          retention-days: 90
+      
+      - name: Upload metrics
+        uses: actions/upload-artifact@v4
+        with:
+          name: metrics-manual
+          path: metrics/
+          retention-days: 90
